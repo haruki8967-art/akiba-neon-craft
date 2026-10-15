@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>アキバ・ネオンクラフト｜ブラウザで遊べる3Dアクション</title>
+<meta name="description" content="雨に濡れた夜のアキバで、車や壁を壊して資材を集め、武器をクラフトし、ブロックを積んで屋上を目指す。ボクセルの少女が主人公の、ブラウザで遊べる3Dアクションゲーム。">
+<meta property="og:type" content="website">
+<meta property="og:title" content="アキバ・ネオンクラフト">
+<meta property="og:description" content="壊して、集めて、作って、登れ。ブラウザで遊べる夜のアキバ3Dアクション。">
+<!-- 公開したら、下の画像のアドレスを「https://公開先のURL/images/shot_top.jpg」に書き換えるとSNSでもこの画像が出ます -->
+<meta property="og:image" content="images/shot_top.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="images/icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Noto+Sans+JP:wght@500;700;900&display=swap">
+<style>
+:root{
+  --bg:#0a0614; --panel:#140c24; --panel2:#1c1232; --line:rgba(255,255,255,.12);
+  --fg:#f4eeff; --dim:#b9add0; --pink:#ff3df0; --cyan:#36f0ff; --yellow:#ffe23a; --red:#ff4a5a;
+}
+*{ box-sizing:border-box; }
+html{ scroll-behavior:smooth; }
+body{ margin:0; background:var(--bg); color:var(--fg); font:500 16px/1.8 "Noto Sans JP","Hiragino Kaku Gothic ProN","Yu Gothic","Meiryo",sans-serif; }
+a{ color:var(--cyan); }
+img{ max-width:100%; display:block; }
+.wrap{ width:min(1080px,100% - 32px); margin:0 auto; }
+h2{ font-family:"Dela Gothic One","Noto Sans JP",sans-serif; font-weight:400; font-size:clamp(24px,4vw,34px); margin:0 0 18px; letter-spacing:.02em; text-shadow:0 0 14px rgba(255,61,240,.45); }
+h2 small{ display:block; font:900 12px "Noto Sans JP",sans-serif; color:var(--cyan); letter-spacing:.2em; text-shadow:none; margin-bottom:2px; }
+section{ padding:72px 0; border-top:1px solid var(--line); }
+
+/* ヒーロー */
+.hero{ position:relative; min-height:min(92vh,760px); display:flex; align-items:flex-end; overflow:hidden; }
+.hero::before{ content:""; position:absolute; inset:0; background:url(images/shot_top.jpg) 72% 35%/cover no-repeat; }
+.hero::after{ content:""; position:absolute; inset:0; background:linear-gradient(90deg,rgba(10,6,20,.82) 0%,rgba(10,6,20,.45) 45%,rgba(10,6,20,0) 70%),linear-gradient(180deg,rgba(10,6,20,0) 55%,var(--bg) 100%); }
+.hero .wrap{ position:relative; z-index:1; padding:0 0 64px; }
+.hero h1{ font-family:"Dela Gothic One","Noto Sans JP",sans-serif; font-weight:400; font-size:clamp(40px,9vw,92px); line-height:1.05; margin:0 0 14px; color:#fff;
+  text-shadow:0 0 10px var(--pink),0 0 32px var(--pink),0 4px 0 #000; }
+.hero .catch{ font-size:clamp(17px,2.4vw,22px); font-weight:900; margin:0 0 6px; text-shadow:0 2px 8px #000; }
+.hero .lead{ color:#e6dcf6; max-width:620px; margin:0 0 26px; text-shadow:0 2px 8px #000; }
+.cta{ display:flex; flex-wrap:wrap; gap:12px; align-items:center; }
+.play{ display:inline-flex; align-items:center; gap:10px; padding:16px 34px; border-radius:14px; background:var(--yellow); color:#1a1030; font-weight:900; font-size:19px; text-decoration:none;
+  box-shadow:0 0 0 3px rgba(255,226,58,.25),0 0 28px rgba(255,226,58,.55); transition:transform .15s, box-shadow .15s; }
+.play:hover{ transform:translateY(-2px); box-shadow:0 0 0 4px rgba(255,226,58,.35),0 0 40px rgba(255,226,58,.75); }
+.play svg{ width:22px; height:22px; }
+.ghost{ padding:14px 22px; border-radius:14px; border:1px solid rgba(255,255,255,.35); color:#fff; text-decoration:none; font-weight:700; background:rgba(10,6,20,.45); }
+.badges{ display:flex; flex-wrap:wrap; gap:8px; margin-top:18px; }
+.badges span{ font-size:12px; font-weight:700; padding:4px 10px; border-radius:999px; background:rgba(10,6,20,.6); border:1px solid var(--line); color:#e6dcf6; }
+
+/* 特徴 */
+.features{ display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); gap:14px; }
+.card{ background:var(--panel); border:1px solid var(--line); border-radius:16px; padding:20px; }
+.card .no{ font-family:"Dela Gothic One",sans-serif; color:var(--pink); font-size:28px; line-height:1; }
+.card h3{ margin:8px 0 6px; font-size:18px; font-weight:900; }
+.card p{ margin:0; color:var(--dim); font-size:14px; }
+
+/* スクリーンショット */
+.shots{ display:grid; grid-template-columns:repeat(2,1fr); gap:14px; }
+.shots figure{ margin:0; border-radius:14px; overflow:hidden; border:1px solid var(--line); background:#000; }
+.shots img{ width:100%; aspect-ratio:16/9; object-fit:cover; transition:transform .3s; }
+.shots figure:hover img{ transform:scale(1.03); }
+.shots figcaption{ padding:8px 12px; font-size:13px; color:var(--dim); background:var(--panel); }
+
+/* 流れ */
+.flow{ display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+.flow li{ list-style:none; background:var(--panel2); border:1px solid var(--line); border-radius:14px; overflow:hidden; font-size:14px; color:var(--dim); display:flex; flex-direction:column; }
+.flow li > img, .flow .weapons{ width:100%; aspect-ratio:16/9; object-fit:cover; background:#000; }
+.flow .weapons{ position:relative; overflow:hidden; background:radial-gradient(ellipse at 50% 50%,#1c2a5a 0%,#0a0614 75%); }
+.flow .weapons img{ position:absolute; height:auto; filter:drop-shadow(0 0 12px rgba(54,160,255,.55)); }
+.flow .weapons img:first-child{ width:60%; left:7%; top:6%; }
+.flow .weapons img:last-child{ width:62%; right:6%; bottom:12%; }
+.flow li > div:last-child{ padding:12px 14px 14px; }
+.flow li b{ display:block; font-size:16px; color:var(--yellow); margin-bottom:2px; }
+.flow{ padding:0; margin:0; }
+
+/* 操作 */
+.controls{ display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:16px; }
+table{ width:100%; border-collapse:collapse; font-size:14px; }
+th,td{ text-align:left; padding:9px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
+th{ white-space:nowrap; width:42%; }
+kbd{ display:inline-block; min-width:24px; text-align:center; padding:1px 7px; margin:1px 2px 1px 0; border-radius:6px; background:rgba(255,255,255,.1); border:1px solid rgba(255,255,255,.22); border-bottom-width:3px; font:700 12px "Noto Sans JP",sans-serif; color:#fff; }
+.tbl-title{ font-weight:900; color:var(--cyan); margin:0 0 6px; }
+
+/* 動作環境・クレジット */
+.info{ display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:16px; }
+.info ul{ margin:0; padding-left:1.2em; color:var(--dim); font-size:14px; }
+.info li{ margin:4px 0; }
+.final{ text-align:center; }
+.final p{ color:var(--dim); }
+footer{ padding:28px 0 40px; border-top:1px solid var(--line); color:var(--dim); font-size:12px; text-align:center; }
+
+@media (max-width:900px){ .flow{ grid-template-columns:repeat(2,1fr); } }
+@media (max-width:640px){
+  section{ padding:52px 0; }
+  .shots{ grid-template-columns:1fr; }
+  .flow{ grid-template-columns:1fr; }
+  .hero .wrap{ padding-bottom:40px; }
+  th{ width:auto; }
+}
+@media (prefers-reduced-motion: reduce){ *{ transition:none!important; scroll-behavior:auto!important; } }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <h1>アキバ・<br>ネオンクラフト</h1>
+    <p class="catch">壊して、集めて、作って、登れ。</p>
+    <p class="lead">雨に濡れた夜のアキバ。ネオンが路面に映る街で、車や壁を壊して資材を集め、武器をクラフトし、ブロックを積んで屋上を目指そう。ガチャロボを倒し続けると、巨大なボスが現れる——。</p>
+    <div class="cta">
+      <a class="play" href="game/index.html">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5v15l12-7.5z" fill="currentColor"/></svg>
+        今すぐ遊ぶ(無料)
+      </a>
+      <a class="ghost" href="#howto">遊び方を見る</a>
+    </div>
+    <div class="badges"><span>ブラウザですぐ遊べる・インストール不要</span><span>PC(キーボード+マウス)推奨</span><span>自動セーブ</span><span>初回の読み込み 約25MB</span></div>
+  </div>
+</header>
+
+<main>
+<section id="about">
+  <div class="wrap">
+    <h2><small>FEATURES</small>このゲームでできること</h2>
+    <div class="features">
+      <div class="card"><div class="no">01</div><h3>街のものを壊す</h3><p>車・自販機・看板・バリケード…街のものはたいてい壊せる。壊すと鉄材やガラス、電子部品などの資材が飛び散る。</p></div>
+      <div class="card"><div class="no">02</div><h3>武器をクラフト</h3><p>集めた資材でダイナマイト・ネオンソード・エネルギーガンを作れる。武器ごとに戦い方がまったく違う。</p></div>
+      <div class="card"><div class="no">03</div><h3>積んで、登る</h3><p>ブロック・階段・床板を自由に設置。足場を積んでビルの屋上へ登り、光る「ゴールドカプセル」を集めよう。</p></div>
+      <div class="card"><div class="no">04</div><h3>にぎやかな電気街</h3><p>ネオン管・箱看板・電光掲示板・壁面ポスター・動くLEDビジョン。100種類以上の看板と広告が、夜のアキバを埋め尽くす。</p></div>
+      <div class="card"><div class="no">05</div><h3>ボス戦と花火</h3><p>ガチャロボを倒してメーターを溜めると、中ボス「キャプテン・ガチャ」が出現。倒せば夜空に花火が上がる。その先には、さらなる強敵も……?</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="shots">
+  <div class="wrap">
+    <h2><small>WORLD</small>ネオンの街へようこそ</h2>
+    <div class="shots">
+      <figure><img src="images/shot_hero.jpg" alt="ネオンが輝く夜の秋葉原の大通りに立つ、ネオンソードを持ったボクセルの少女" loading="lazy"><figcaption>雨の夜のアキバ。路面にネオンが映り込む</figcaption></figure>
+      <figure><img src="images/shot_street1.jpg" alt="電光掲示板やネオン管、壁面のゲーム広告が並ぶ大通り" loading="lazy"><figcaption>電光掲示板・ネオン管・壁面ポスター。看板がぎっしりの電気街</figcaption></figure>
+      <figure><img src="images/shot_street2.jpg" alt="色とりどりの箱看板やのぼり旗が並ぶ交差点" loading="lazy"><figcaption>店ごとに違う看板。箱看板やのぼり旗がカラフルに並ぶ</figcaption></figure>
+      <figure><img src="images/shot_roof.jpg" alt="ビルの屋上に立ち、向かいのビル街を見下ろす主人公" loading="lazy"><figcaption>ブロックを積んで屋上へ。夜の街を見下ろせる</figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<section id="flow">
+  <div class="wrap">
+    <h2><small>HOW TO PLAY</small>ゲームの流れ</h2>
+    <ol class="flow">
+      <li><img src="images/shot_break.jpg" alt="ネオンソードで車を壊し、破片が飛び散る様子" loading="lazy"><div><b>1. 壊す</b>車や自販機、看板などを攻撃して壊す。壊せる物は街じゅうにある</div></li>
+      <li><img src="images/shot_collect.jpg" alt="壊した車から飛び散った資材が路面に落ちている様子" loading="lazy"><div><b>2. 集める</b>飛び散った資材(鉄材・ガラス・電子部品など)は、近くを歩くだけで拾える</div></li>
+      <li><div class="weapons"><img src="images/weapon_blade.png" alt="青く光るネオンソード" loading="lazy"><img src="images/weapon_gun.png" alt="ボクセル風のエネルギーガン" loading="lazy"></div><div><b>3. 作る</b><kbd>C</kbd> キーのクラフト画面で、資材から武器を作る(ネオンソード・エネルギーガン・ダイナマイト)</div></li>
+      <li><img src="images/shot_battle.jpg" alt="大通りでガチャロボたちと戦う主人公" loading="lazy"><div><b>4. 戦う</b>襲ってくるガチャロボを倒すと、画面上のメーターが溜まっていく</div></li>
+      <li><img src="images/shot_boss.jpg" alt="怒った目をした巨大なガチャカプセルの中ボスと向き合う主人公" loading="lazy"><div><b>5. ボス出現</b>メーターが満タンになると、中ボス「キャプテン・ガチャ」が現れる!</div></li>
+      <li><img src="images/shot_fireworks.jpg" alt="ビルの間の夜空に上がる花火" loading="lazy"><div><b>6. 花火</b>ボスを倒すと夜空に花火が上がる。……でも、その先にはさらなる強敵が?</div></li>
+    </ol>
+    <p style="color:var(--dim);font-size:14px;margin-top:14px">はじめて遊ぶときは、移動・視点・ジャンプ・攻撃・クラフトのかんたんなチュートリアルから始まります(途中でやめることもできます)。</p>
+  </div>
+</section>
+
+<section id="howto">
+  <div class="wrap">
+    <h2><small>CONTROLS</small>操作方法(PC)</h2>
+    <div class="controls">
+      <div>
+        <p class="tbl-title">移動・視点</p>
+        <table>
+          <tr><th><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd></th><td>移動(前は画面の奥の方向)</td></tr>
+          <tr><th><kbd>Shift</kbd> 押しっぱなし</th><td>ダッシュ</td></tr>
+          <tr><th><kbd>Space</kbd></th><td>ジャンプ(一回押しで小ジャンプ、長押しで大ジャンプ)</td></tr>
+          <tr><th>画面をクリック → マウス</th><td>視点を動かす(<kbd>Esc</kbd> でマウスを戻す)</td></tr>
+          <tr><th><kbd>←</kbd><kbd>→</kbd><kbd>↑</kbd><kbd>↓</kbd></th><td>キーで視点を動かす</td></tr>
+          <tr><th><kbd>V</kbd> / ホイール押し</th><td>視点をキャラの真後ろに戻す</td></tr>
+        </table>
+      </div>
+      <div>
+        <p class="tbl-title">戦闘・クラフト・建築</p>
+        <table>
+          <tr><th><kbd>E</kbd> / 左クリック</th><td>攻撃・壊す(押しっぱなしで連続)</td></tr>
+          <tr><th>右クリック</th><td>ソードの薙ぎ払い / 銃ののぞき込み</td></tr>
+          <tr><th><kbd>1</kbd>〜<kbd>4</kbd></th><td>武器の持ち替え</td></tr>
+          <tr><th><kbd>C</kbd></th><td>クラフト画面を開く</td></tr>
+          <tr><th><kbd>B</kbd></th><td>戦闘モード ⇄ 建築モード</td></tr>
+          <tr><th><kbd>F</kbd> / 右クリック(建築)</th><td>ブロックを置く(<kbd>R</kbd> で形を変更)</td></tr>
+          <tr><th><kbd>Q</kbd></th><td>ポーションで回復</td></tr>
+          <tr><th><kbd>Esc</kbd></th><td>ポーズ(設定・セーブ・チュートリアル見直し)</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="info">
+  <div class="wrap">
+    <h2><small>INFORMATION</small>動作環境・クレジット</h2>
+    <div class="info">
+      <div class="card">
+        <h3>動作環境</h3>
+        <ul>
+          <li>PC(Windows / Mac)の最新版 Chrome または Edge を推奨</li>
+          <li>3D表示(WebGL)に対応したブラウザが必要です</li>
+          <li>キーボードとマウスでの操作を推奨(スマホはタッチ操作に対応していますが、PCの方が快適です)</li>
+          <li>初回はゲームデータ(約25MB)の読み込みがあります</li>
+          <li>進行状況はブラウザに自動でセーブされます(同じブラウザで続きから遊べます)</li>
+          <li>重いと感じたら、ポーズ画面の「画質: 軽量」に切り替えてください</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>クレジット</h3>
+        <ul>
+          <li>3Dモデル(キャラクター・武器・ボス): <a href="https://www.meshy.ai/" target="_blank" rel="noopener">Meshy AI</a>(CC BY 4.0)</li>
+          <li>キャラクターアニメーション: <a href="https://www.mixamo.com/" target="_blank" rel="noopener">Adobe Mixamo</a></li>
+          <li>3D描画: <a href="https://threejs.org/" target="_blank" rel="noopener">three.js</a>(MIT License)</li>
+          <li>フォント: Dela Gothic One / Noto Sans JP(<a href="https://fonts.google.com/" target="_blank" rel="noopener">Google Fonts</a>、SIL Open Font License)</li>
+          <li>街並み・小物・効果音・BGM: すべてプログラムで生成</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="final">
+  <div class="wrap">
+    <h2>さあ、夜のアキバへ。</h2>
+    <p>ブラウザだけで、今すぐ遊べます。</p>
+    <div class="cta" style="justify-content:center">
+      <a class="play" href="game/index.html">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5v15l12-7.5z" fill="currentColor"/></svg>
+        今すぐ遊ぶ(無料)
+      </a>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">アキバ・ネオンクラフト ver 1.0</div>
+</footer>
+
+</body>
+</html>
